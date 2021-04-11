@@ -14,4 +14,4 @@
 
     - name: Include kubectl role
       include_role:
-        name: githubixx.kubectl
+        name: ansible-role-kubectl
