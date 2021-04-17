@@ -1,8 +1,18 @@
 ---
+
+- name: Download kubectl checksum
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/{{ kubectl_os }}/{{ kubectl_arch }}/kubectl.sha512
+    dest: "{{ kubectl_tmp_directory }}/kubectl_checksum"
+
+- shell: cat "{{ kubectl_tmp_directory }}/kubectl_checksum"
+  register: cs
+
 - name: Download kubectl binary
   get_url:
     url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/{{ kubectl_os }}/{{ kubectl_arch }}/kubectl"
-    checksum: "{{ kubectl_checksum_binary }}"
+    # checksum: sha512:https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/{{ kubectl_os }}/{{ kubectl_arch }}/kubectl.sha512
+    checksum: 'sha512:{{ cs.stdout }}'
     dest: "{{ kubectl_tmp_directory }}"
   tags:
     - kubectl
